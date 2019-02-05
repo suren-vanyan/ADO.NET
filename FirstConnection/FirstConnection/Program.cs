@@ -17,7 +17,7 @@ namespace FirstConnection
             try
             {
                 //ConnectWithDB().GetAwaiter();
-                Task.Run(() => GetdataFromDB()).GetAwaiter().GetResult();
+                Task.Run(() => ReadDataAsync()).GetAwaiter().GetResult();
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
 
@@ -42,7 +42,7 @@ namespace FirstConnection
             Console.WriteLine("Connection closed...");
         }
 
-        static async  void GetdataFromDB()
+        static async  void ReadDataAsync()
         {
             string coonectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
             string sqlExpress = "Select * from Person";
@@ -50,7 +50,7 @@ namespace FirstConnection
             {
                 await  connection.OpenAsync();
                 SqlCommand command = new SqlCommand(sqlExpress, connection);
-                SqlDataReader dataReader =await  command.ExecuteReaderAsync();
+                using (SqlDataReader dataReader = await command.ExecuteReaderAsync())            
                 if (dataReader.HasRows)
                 {
                    
